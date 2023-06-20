@@ -14,56 +14,80 @@
 
 const throwOptions = ["rock", "paper", "scissors"];
 
-function getComputerChoice() {
-  computerChoice = throwOptions[Math.floor(Math.random() * 3)];
-  console.log(computerChoice);
+let playerWins = 0;
+let comWins = 0;
 
+function getComputerChoice() {
+  const computerChoice = throwOptions[Math.floor(Math.random() * 3)];
   return computerChoice;
 }
 
-function getUserstatus() {
-  let userStatus = null;
-  while (userStatus !== "y") {
-    userStatus = prompt(
-      "Would you like to start a new RPC Game? y for yes n for no:"
-    );
-  }
+function getPlayerChoice() {
+  let playerSelection = null;
 
-  playRound();
-}
-
-function playRound(playerSelection, computerChoice) {
-  playerSelection = null;
   while (
     playerSelection !== "rock" &&
     playerSelection !== "paper" &&
     playerSelection !== "scissors"
   ) {
-    console.log(playerSelection);
     playerSelection = prompt(
       "please enter valid Throw: Rock Paper or Scissors"
     );
+
+    if (!playerSelection) continue;
+
     playerSelection = playerSelection.toLowerCase();
   }
 
-  computerChoice = getComputerChoice();
-
-  if (playerSelection === computerChoice) {
-    alert("It's a draw!");
-  } else if (playerSelection === "rock" && computerChoice === "scissors") {
-    alert("You win! Rock beats scissors");
-  } else if (playerSelection === "rock" && computerChoice === "paper") {
-    alert("You lose! Paper beats rock");
-  } else if (playerSelection === "paper" && computerChoice === "rock") {
-    alert("You win! Paper beats rock");
-  } else if (playerSelection === "paper" && computerChoice === "scissors") {
-    alert("You lose! Scissors beat paper");
-  } else if (playerSelection === "scissors" && computerChoice === "paper") {
-    alert("You win! Scissors beat paper");
-  } else if (playerSelection === "scissors" && computerChoice === "rock") {
-    alert("You lose!Rock beats scissors");
-  }
-  getUserstatus();
+  return playerSelection;
 }
 
-playRound();
+function getWinningMove(playerSelection, computerSelection) {
+  if (playerSelection === computerSelection) {
+    return null;
+  } else if (playerSelection === "rock" && computerSelection === "scissors") {
+    return "rock";
+  } else if (playerSelection === "rock" && computerSelection === "paper") {
+    return "paper";
+  } else if (playerSelection === "paper" && computerSelection === "rock") {
+    return "paper";
+  } else if (playerSelection === "paper" && computerSelection === "scissors") {
+    return "scissors";
+  } else if (playerSelection === "scissors" && computerSelection === "paper") {
+    return "scissors";
+  } else if (playerSelection === "scissors" && computerSelection === "rock") {
+    return "rock";
+  }
+}
+
+function playRound() {
+  let playerSelection = getPlayerChoice();
+  let computerSelection = getComputerChoice();
+
+  const winningMove = getWinningMove(playerSelection, computerSelection);
+  const didPlayerWin = winningMove === playerSelection;
+
+  if (!winningMove) {
+    alert("Tie!");
+  } else if (didPlayerWin) {
+    playerWins++;
+    alert(`You won the round! ${playerSelection} beats ${computerSelection}`);
+  } else {
+    comWins++;
+    alert(`You lost the round! ${computerSelection} beats ${playerSelection}`);
+  }
+}
+
+function game() {
+  while (playerWins < 3 && comWins < 3) {
+    playRound();
+  }
+
+  if (playerWins > comWins) {
+    alert("you won the game message ur code is bad u get to keep ur jobß");
+  } else {
+    alert("the computers won again guy");
+  }
+}
+
+game();
