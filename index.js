@@ -12,36 +12,33 @@
 // create input which asks for users choice of throw (rock, paper, or scissors)
 // compare the two options to a set of perameters and specifications
 
+// Throw options
 const throwOptions = ["rock", "paper", "scissors"];
 
+// player to com wins
 let playerWins = 0;
+/**
+   @todo: fix comWins generating untimited H2 TAGs 
+   and com never wins on paper
+**/
 let comWins = 0;
 
+let rockBtn = document.querySelector("#rock");
+let paperBtn = document.querySelector("#paper");
+let scissorsBtn = document.querySelector("#scissors");
+
+// function which gets computer choice
 function getComputerChoice() {
   const computerChoice = throwOptions[Math.floor(Math.random() * 3)];
   return computerChoice;
 }
 
-function getPlayerChoice() {
-  let playerSelection = null;
-
-  while (
-    playerSelection !== "rock" &&
-    playerSelection !== "paper" &&
-    playerSelection !== "scissors"
-  ) {
-    playerSelection = prompt(
-      "please enter valid Throw: Rock Paper or Scissors"
-    );
-
-    if (!playerSelection) continue;
-
-    playerSelection = playerSelection.toLowerCase();
-  }
-
+// function which gets player choice
+/*function getPlayerChoice() {
   return playerSelection;
-}
+}*/
 
+// function which sees who won
 function getWinningMove(playerSelection, computerSelection) {
   if (playerSelection === computerSelection) {
     return null;
@@ -52,7 +49,7 @@ function getWinningMove(playerSelection, computerSelection) {
   } else if (playerSelection === "paper" && computerSelection === "rock") {
     return "paper";
   } else if (playerSelection === "paper" && computerSelection === "scissors") {
-    return "scissors";
+    return "paper";
   } else if (playerSelection === "scissors" && computerSelection === "paper") {
     return "scissors";
   } else if (playerSelection === "scissors" && computerSelection === "rock") {
@@ -60,33 +57,68 @@ function getWinningMove(playerSelection, computerSelection) {
   }
 }
 
-function playRound() {
-  let playerSelection = getPlayerChoice();
-  let computerSelection = getComputerChoice();
+// round logic
 
-  const winningMove = getWinningMove(playerSelection, computerSelection);
-  const didPlayerWin = winningMove === playerSelection;
-
-  if (!winningMove) {
-    alert("Tie!");
-  } else if (didPlayerWin) {
-    playerWins++;
-    alert(`You won the round! ${playerSelection} beats ${computerSelection}`);
+function playRound(playerSelection, computerSelection) {
+  if (playerWins == 5 || comWins == 5) {
+    return;
   } else {
-    comWins++;
-    alert(`You lost the round! ${computerSelection} beats ${playerSelection}`);
+    const p = document.createElement("p");
+
+    const winningMove = getWinningMove(playerSelection, computerSelection);
+    const didPlayerWin = winningMove === playerSelection;
+    if (!winningMove) {
+      p.innerText = `Tie! (player - ${playerWins} ,  com - ${comWins})`;
+      document.body.appendChild(p);
+    } else if (didPlayerWin) {
+      playerWins++;
+      p.innerText = `You won the round! ${playerSelection} beats ${computerSelection} (player - ${playerWins} ,  com - ${comWins})`;
+      document.body.appendChild(p);
+    } else {
+      comWins++;
+      p.innerText = `You lost the round! ${computerSelection} beats ${playerSelection} (player - ${playerWins} ,  com - ${comWins})`;
+      document.body.appendChild(p);
+    }
   }
 }
+const h2 = document.createElement("h2");
 
-function game() {
-  while (playerWins < 3 && comWins < 3) {
-    playRound();
+function checkForWinner(comWins, playerWins) {
+  if (playerWins == 5) {
+    h2.innerText = "PLAYER WINS GAME";
+    document.body.appendChild(h2);
+  } else if (comWins == 5) {
+    const h2 = document.createElement("h2");
+    h2.innerText = "COM WINS GAME";
+    document.body.appendChild(h2);
   }
+}
+// game logic
+function game() {
+  if (playerWins < 5 || comWins < 5) {
+    rockBtn.addEventListener("click", () => {
+      playerSelection = "rock";
+      let computerSelection = getComputerChoice();
+      playRound(playerSelection, computerSelection);
+      checkForWinner(comWins, playerWins);
+    });
 
-  if (playerWins > comWins) {
-    alert("you won the game message ur code is bad u get to keep ur jobß");
-  } else {
-    alert("the computers won again guy");
+    paperBtn.addEventListener("click", () => {
+      playerSelection = "paper";
+      let computerSelection = getComputerChoice();
+
+      playRound(playerSelection, computerSelection);
+      checkForWinner(comWins, playerWins);
+    });
+
+    scissorsBtn.addEventListener("click", () => {
+      playerSelection = "scissors";
+      let computerSelection = getComputerChoice();
+      playRound(playerSelection, computerSelection);
+      checkForWinner(comWins, playerWins);
+    });
+  } else if (playerWins == 5 || comWins == 5) {
+    return;
   }
 }
 
